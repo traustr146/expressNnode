@@ -1,0 +1,11 @@
+extends layout
+block content
+
+    h1 #{title}
+    h5 written by: #{author}
+    br
+    p #{body}
+    br
+    a.btn.btn-primary(href='/article/edit/'+id) Update
+    a.btn.btn-danger.delete-article(href='#',data-id=id) Delete
+    
