@@ -4,7 +4,7 @@ const path=require('path');
 const mongoose=require('mongoose');
 const bodyParser = require('body-parser');
 const session= require('express-session');
-const expressValidator=require('express-validator');
+// const expressValidator=require('express-validator');
 const flash=require('connect-flash'); 
 const expressMessages=require('express-messages');
 
@@ -70,22 +70,25 @@ app.use(function (req, res, next) {
 });
 
 // Express Validator Middleware
-app.use(expressValidator({
-    errorFormatter: function(param, msg, value) {
-        var namespace = param.split('.')
-        , root    = namespace.shift()
-        , formParam = root;
+
+//   app.post('/user', [
+//     check('username')
+//       // Every validator method in the validator lib is available as a
+//       // method in the check() APIs.
+//       // You can customize per validator messages with .withMessage()
+//       .isEmail().withMessage('must be an email')
   
-      while(namespace.length) {
-        formParam += '[' + namespace.shift() + ']';
-      }
-      return {
-        param : formParam,
-        msg   : msg,
-        value : value
-      };
-    }
-  }));
+//       // Every sanitizer method in the validator lib is available as well!
+//       .trim()
+//       .normalizeEmail()
+  
+//       // ...or throw your own errors using validators created with .custom()
+//       .custom(value => {
+//         return findUserByEmail(value).then(user => {
+//           throw new Error('this email is already in use');
+//         })
+//       }),
+
 
 //setting up home router
 
@@ -104,8 +107,12 @@ app.get('/',function(req,res,next){
     });
 });
 
-let routes=require('./routes/articleRoutes');
-app.use('/article',routes);
+let articleRoutes=require('./routes/articleRoutes');
+app.use('/article',articleRoutes);
+
+let userRoutes=require('./routes/users');
+app.use('/users',userRoutes);
+
 
 // listen to the port
 
