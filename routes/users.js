@@ -13,11 +13,12 @@ let user=require('../models/userSchema');
 
 
 //passport configuration
+
 passport.use(new LocalStrategy(
     function(username, password, done) {
-      User.findOne({ username: username }, function (err, user) {
+      user.findOne({ username: username }, function (err, user) {
+        console.log(user);
         if (err) throw err; 
-
         if (!user) {
           return done(null, false, { message: 'Incorrect username.' });
         }
@@ -29,17 +30,22 @@ passport.use(new LocalStrategy(
             else{
                 return done(null, false, { message: 'wrong password '});
             }
+            });
+        });
+    }));
 
-        })
+    router.use(passport.initialize());
+    router.use(passport.session());
 
-
-        if (!user.validPassword(password)) {
-          return done(null, false, { message: 'Incorrect password.' });
-        }
-        return done(null, user);
+    passport.serializeUser(function(user, done) {
+        done(null, user.id);
       });
-    }
-  ));
+      
+      passport.deserializeUser(function(id, done) {
+        user.findById(id, function(err, user) {
+          done(err, user);
+        });
+      });
 
 
 router.get('/register',function(req,res,next){
